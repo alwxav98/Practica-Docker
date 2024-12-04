@@ -35,8 +35,16 @@ jobs:
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
+            # Asegúrate de que Docker esté instalado
+            if ! [ -x "$(command -v docker)" ]; then
+              sudo apt update && sudo apt install -y docker.io || sudo yum install -y docker
+              sudo systemctl start docker
+              sudo systemctl enable docker
+              sudo usermod -aG docker $USER
+            fi
+      
+            # Ejecuta los comandos Docker
             docker pull alevm98/appdec2:latest
-            debug: true
             docker stop my_container || true
             docker rm my_container || true
             docker run -d --name my_container -p 80:80 alevm98/appdec2:latest
