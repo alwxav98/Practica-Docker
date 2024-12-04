@@ -36,6 +36,7 @@ jobs:
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
             docker pull alevm98/appdec2:latest
+            debug: true
             docker stop my_container || true
             docker rm my_container || true
             docker run -d --name my_container -p 80:80 alevm98/appdec2:latest
