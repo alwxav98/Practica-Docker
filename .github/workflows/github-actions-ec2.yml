@@ -31,6 +31,9 @@ jobs:
   deploy-to-ec2:
     needs: build-and-push
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        instance: ["HOST_DNS", "HOST_DNS2", "HOST_DNS3"]
     steps:
       - name: Configure Docker permissions
         run: |
@@ -39,7 +42,7 @@ jobs:
       - name: Deploy to EC2
         uses: appleboy/ssh-action@master
         with:
-          host: ${{ secrets.HOST_DNS }}
+          host: ${{ secrets[matrix.instance] }}
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
@@ -55,6 +58,11 @@ jobs:
             sudo chmod 666 /var/run/docker.sock
 
             # Ejecuta los comandos Docker
+            docker pull alevm98/appdec2:latest
+            docker stop my_container || true
+            docker rm my_container || true
+            docker run -d --name my_container -p 80:80 alevm98/appdec2:latest
+
             docker pull alevm98/appdec2:latest
             docker stop my_container || true
             docker rm my_container || true
