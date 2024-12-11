@@ -12,10 +12,6 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Configure Docker permissions
-        run: |
-          sudo chmod 666 /var/run/docker.sock
-
       - name: Log in to DockerHub
         uses: docker/login-action@v2
         with:
@@ -23,7 +19,7 @@ jobs:
           password: ${{ secrets.DOCKER_PASSWORD }}
 
       - name: Build Docker image
-        run: docker build -t alevm98/appdec2 .
+        run: docker build -t alevm98/appdec2 . 
 
       - name: Push Docker image to DockerHub
         run: docker push alevm98/appdec2:latest
@@ -33,39 +29,17 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        instance: ["HOST_DNS", "HOST_DNS2", "HOST_DNS3"]
-    steps:
-      - name: Configure Docker permissions
-        run: |
-          sudo chmod 666 /var/run/docker.sock
+        instance: ["HOST_DNS", "HOST_DNS2", "HOST_DNS3"]  # Instancias EC2
 
-      - name: Deploy to EC2
+    steps:
+      - name: Trigger redeploy on EC2
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets[matrix.instance] }}
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
-            # Asegúrate de que Docker esté instalado
-            if ! [ -x "$(command -v docker)" ]; then
-              sudo apt update && sudo apt install -y docker.io || sudo yum install -y docker
-              sudo systemctl start docker
-              sudo systemctl enable docker
-              sudo usermod -aG docker $USER
-            fi
-
-            # Configurar permisos del socket Docker
-            sudo chmod 666 /var/run/docker.sock
-
-            # Ejecuta los comandos Docker
-            docker pull alevm98/appdec2:latest
-            docker stop my_container || true
-            docker rm my_container || true
-            docker run -d --name my_container -p 80:80 alevm98/appdec2:latest
-
-            docker pull alevm98/appdec2:latest
-            docker stop my_container || true
-            docker rm my_container || true
-            docker run -d --name my_container -p 80:80 alevm98/appdec2:latest
+            # Este paso solo puede notificar a las instancias EC2 si es necesario (por ejemplo, reiniciar el contenedor)
+            echo "La imagen ya está en Docker Hub, las instancias EC2 se encargan del despliegue."
    
   
