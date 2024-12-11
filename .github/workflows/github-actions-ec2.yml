@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+      - test
 
 jobs:
   build-and-push:
@@ -19,7 +20,7 @@ jobs:
           password: ${{ secrets.DOCKER_PASSWORD }}
 
       - name: Build Docker image
-        run: docker build -t alevm98/appdec2 . 
+        run: docker build -t alevm98/appdec2 .
 
       - name: Push Docker image to DockerHub
         run: docker push alevm98/appdec2:latest
@@ -29,8 +30,8 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        instance: ["HOST_DNS", "HOST_DNS2", "HOST_DNS3"]  # Instancias EC2
-
+        instance: ${{ fromJson(github.ref_name == 'main' && '["HOST_DNS", "HOST_DNS2"]' || '["HOST_DNS3", "HOST_DNS4"]') }}
+    
     steps:
       - name: Trigger redeploy on EC2
         uses: appleboy/ssh-action@master
@@ -39,7 +40,5 @@ jobs:
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
-            # Este paso solo puede notificar a las instancias EC2 si es necesario (por ejemplo, reiniciar el contenedor)
-            echo "La imagen ya está en Docker Hub, las instancias EC2 se encargan del despliegue."
-   
+            echo "Desplegando en ${{ matrix.instance }} con la rama ${{ github.ref_name }}"
   
