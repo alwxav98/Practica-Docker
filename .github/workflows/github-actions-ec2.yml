@@ -20,8 +20,7 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      - name: Build Docker image
-        run: docker build -t alevm98/appdec2 .
+      
 
       - name: Push Docker image to DockerHub
         run: docker push alevm98/appdec2:latest
