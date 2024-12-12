@@ -41,5 +41,10 @@ jobs:
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
+            docker pull alevm98/appdec2:latest 
+            docker stop my_container || true 
+            docker rm my_container || true 
+            docker run -d --name my_container -p 80:80 alevm98/appdec2:latest
+
             echo "Desplegando en ${{ matrix.instance }} con la rama ${{ github.ref_name }}"
   
