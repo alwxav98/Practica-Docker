@@ -14,7 +14,7 @@
         <br>
         <br>
         <h3 class="display-4">Facultad de Ingeniería y Ciencias Aplicadas</h3>
-        <h3 class="display-4">Sistemas de Información</h3>
+        <h3 class="display-4">Sistemas de Información practica en clase</h3>
         <br>
         <h3 class="display-4">Tanya Alexandra Vaca Mena</h3>
         <h3 class="display-4">SI8-002</h3>
