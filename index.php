@@ -18,6 +18,7 @@
         <br>
         <h3 class="display-4">Tanya Alexandra Vaca Mena</h3>
         <h3 class="display-4">SI8-002</h3>
+        <h1>Hola Mundo desde <?php echo shell_exec('hostname -f'); ?></h1>
     </div>
 </body>
 </html>
