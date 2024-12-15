@@ -18,6 +18,13 @@
         <br>
         <h3 class="display-4">Tanya Alexandra Vaca Mena</h3>
         <h3 class="display-4">SI8-002</h3>
+        <h1>
+            <?php
+                // Obtén el nombre del host completo
+                $hostname = trim(shell_exec("hostname -f"));
+                echo "Hola Mundo desde $hostname";
+            ?>
+        </h1>
     </div>
 </body>
 </html>
